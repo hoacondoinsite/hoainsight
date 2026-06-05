@@ -1,14 +1,12 @@
-
- * App.jsx
- * HOACONDInsight™ Main Application
- * Modified: June 5, 2026
- * Change: Option A — deploymentState hardcoded to LIVE so platform
- *         is visible without Supabase connection. Governance import added.
- *         This is a temporary setting. When Supabase is connected,
- *         deploymentState will be read from the database instead.
- * Authorized by: Peter Klein, Founder
- * Rollback: Change useState('LIVE') back to useState('TESTING') if needed
- */
+// App.jsx
+// HOACONDInsight™ Main Application
+// Modified: June 5, 2026
+// Change: Option A — deploymentState hardcoded to LIVE so platform
+//         is visible without Supabase connection. Governance import added.
+//         This is a temporary setting. When Supabase is connected,
+//         deploymentState will be read from the database instead.
+// Authorized by: Peter Klein, Founder
+// Rollback: Change useState('LIVE') back to useState('TESTING') if needed
 
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
@@ -61,27 +59,11 @@ import PLATFORM_GOVERNANCE from './lib/PLATFORM_GOVERNANCE.js';
 // Consent
 import ConsentModal from './components/ConsentModal.jsx';
 
-/**
- * HOACONDInsight™ Operating System v5.2
- * Legal entity: Hoa Condo Insight LLC (Florida LLC)
- * 61 N Lakeshore Drive, Hypoluxo, Florida 33462
- * Governance Framework: v1.0 — Established June 5, 2026
- * Consent required: Florida F.S. § 934.03 (two-party consent state)
- */
-
 const CONSENT_REQUIRED_PATHS = ['/order', '/dashboard', '/lenders/dashboard', '/attorneys/dashboard', '/association-portal', '/admin', '/founder'];
-const PUBLIC_PATHS = ['/', '/how-it-works', '/features', '/pricing', '/sample-report', '/partners', '/contact', '/white-label', '/lenders', '/legal/', '/status'];
 
 export default function App() {
   const [integrations, setIntegrations] = useState({ supabase:true, stripe:true, openai:true, resend:true });
-
-  // ── OPTION A FIX ──────────────────────────────────────────────────────
-  // deploymentState is set to 'LIVE' so the platform is fully visible.
-  // When Supabase is connected (Option B), this will be replaced with
-  // a database read. To rollback: change 'LIVE' back to 'TESTING'.
   const [deploymentState, setDeploymentState] = useState('LIVE');
-  // ── END OPTION A FIX ──────────────────────────────────────────────────
-
   const [consentGiven, setConsentGiven] = useState(() => {
     try { return sessionStorage.getItem('hoacond_consent') === 'true'; }
     catch { return false; }
@@ -91,8 +73,7 @@ export default function App() {
 
   useEffect(() => {
     initTechnologyCompatibility();
-    // Log governance version on startup
-    console.info(`HOACONDInsight™ OS v5.2 — Governance Framework v${PLATFORM_GOVERNANCE.version} active — ${PLATFORM_GOVERNANCE.totalRules} rules enforced`);
+    console.info('HOACONDInsight OS v5.2 — Governance Framework v' + PLATFORM_GOVERNANCE.version + ' active');
     const params = new URLSearchParams(window.location.search);
     if (params.get('mode') === 'test') setDeploymentState('TESTING');
     const path = window.location.pathname;
@@ -128,17 +109,16 @@ export default function App() {
 
       {siteIsTestMode && (
         <div style={{ background:'#dc2626', color:'white', padding:'6px 16px', textAlign:'center', fontSize:12, fontWeight:700, position:'sticky', top:0, zIndex:9999 }}>
-          🧪 TEST MODE — No real charges · Test card: 4242 4242 4242 4242 · All reports watermarked
+          TEST MODE — No real charges · Test card: 4242 4242 4242 4242 · All reports watermarked
         </div>
       )}
       {deploymentState === 'OFFLINE' && (
         <div style={{ background:'#7f1d1d', color:'white', padding:'6px 16px', textAlign:'center', fontSize:12, fontWeight:700, position:'sticky', top:0, zIndex:9999 }}>
-          🔴 PLATFORM OFFLINE — Contact peter@hoacondinsight.com
+          PLATFORM OFFLINE — Contact peter@hoacondinsight.com
         </div>
       )}
 
       <Routes>
-        {/* Public */}
         <Route path="/" element={<Landing deploymentState={deploymentState} />} />
         <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/features" element={<Features />} />
@@ -154,8 +134,6 @@ export default function App() {
         <Route path="/legal/disclaimer" element={<Disclaimer />} />
         <Route path="/legal/cancellation" element={<Cancellation />} />
         <Route path="/attorneys/apply" element={<AttorneyApply />} />
-
-        {/* Consent-required */}
         <Route path="/order" element={<OrderFlow siteAcceptsOrders={siteAcceptsOrders} deploymentState={deploymentState} />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/association-portal" element={<AssociationPortal />} />
@@ -164,14 +142,10 @@ export default function App() {
         <Route path="/lenders/dashboard" element={<LenderDashboard />} />
         <Route path="/lenders/compliance-guide" element={<LenderComplianceGuide />} />
         <Route path="/attorneys/dashboard" element={<AttorneyDashboard />} />
-
-        {/* Founder only */}
         <Route path="/founder" element={<FounderDashboard />} />
         <Route path="/marketing-studio" element={<MarketingStudio />} />
         <Route path="/video-training" element={<VideoTrainingDashboard />} />
         <Route path="/emergency-ops" element={<EmergencyOperationsDashboard />} />
-
-        {/* Admin OS */}
         <Route path="/admin/*" element={
           <AdminLayout
             integrations={integrations}
@@ -181,10 +155,8 @@ export default function App() {
             userRole="founder"
           />
         } />
-
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
 }
-
