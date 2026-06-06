@@ -12,7 +12,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Pages
-import Landing from './pages/Landing.jsx';
+import Landing from './pages/HOA_Landing.jsx';
 import HowItWorks from './pages/HowItWorks.jsx';
 import Features from './pages/Features.jsx';
 import Pricing from './pages/Pricing.jsx';
